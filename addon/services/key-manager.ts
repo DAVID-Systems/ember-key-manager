@@ -24,9 +24,7 @@ const isInputElement = (element: HTMLElement) => {
 };
 
 export default class KeyManagerService extends Service {
-  @service config!: KeyManagerConfig;
-
-  isDisabledOnInput = false; // Config option
+  isDisabledOnInput = true; // hard-coded to true to remove dependency on ember-config-service
   macros = A();
 
   public get keydownMacros() {
@@ -35,11 +33,6 @@ export default class KeyManagerService extends Service {
 
   public get keyupMacros() {
     return this.macros.filterBy('keyEvent', 'keyup');
-  }
-
-  constructor() {
-    super(...arguments);
-    this._registerConfigOptions();
   }
 
   public addMacro(options: MacroOptions) {
@@ -176,12 +169,6 @@ export default class KeyManagerService extends Service {
       .reduce((max, priority) => Math.max(max, priority), -Infinity);
 
     return matchingMacros.filter((macro: Macro) => macro.priority === highestPriority);
-  }
-
-  private _registerConfigOptions() {
-    if (this.config.isDisabledOnInput !== undefined) {
-      this.isDisabledOnInput = this.config.isDisabledOnInput;
-    }
   }
 
   private _setDisabledState(recipient: any, isDisabled: boolean) {
